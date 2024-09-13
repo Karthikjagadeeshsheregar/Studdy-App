@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study-Buddy</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f3f8;
+            color: #333;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        .top {
+            height: 25%;
+            background-image: url('https://img.freepik.com/premium-vector/back-school-abstract-blackboard-green-board-with-hand-drawn-chalk-school-supplies_697711-357.jpg?w=1060');
+            background-size: 100% 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            color: #fff;
+        }
+
+        .middle {
+            flex: 1;
+            display: flex;
+        }
+
+        .left, .right {
+            background-color: #f8f9fa;
+            padding: 20px;
+            color: #555;
+        }
+
+        .left {
+            width: 70%;
+            border-bottom-left-radius: 8px;
+        }
+
+        .right {
+            width: 30%;
+            border-bottom-right-radius: 8px;
+            border-left: 2px solid #007bff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .button {
+            margin-bottom: 10px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #386f45;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            transition-duration: 0.4s;
+        }
+        .removebutton {
+            background-color: #f2f3f8;
+            padding-left: 10px;
+            padding-right: 10px;
+            color : red
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
+
+        h1, h2 {
+            margin: 0 0 10px;
+        }
+
+        p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .welcome {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subheader {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top">
+            <div class="welcome">Study Buddy!</div>
+            <div class="subheader">An app for students</div>
+        </div>
+        <div class="middle">
+            <div class="left">
+                <h2>Set Up Study Time</h2>
+                <form method="post" action="{% url 'add_study_time' %}">
+                    {% csrf_token %}
+                    <input type="text" name="subject" placeholder="Subject" required>
+                    <input type="time" name="time" required>
+                    <button type="submit" class="button">Add Study Time</button>
+                </form>
+                <h2>Current Study Times</h2>
+                <ul>
+                    {% for study_time in study_times %}
+                    <li>
+                        {{ study_time.subject }} - {{ study_time.time }}
+                        <button onclick="redirectToStartStudy()" class="button">Start Study</button>
+                        <a href="{% url 'delete_study_time' study_time.pk %}" class="removebutton">Remove</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="right">
+                <h2>Study Materials</h2>
+                <form method="post" action="{% url 'add_material' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Material Name" required>
+                    <input type="file" name="file" required>
+                    <button type="submit" class="button">Add Material</button>
+                </form>
+                <h2>Current Materials</h2>
+                <ul>
+                    {% for material in study_materials %}
+                    <li>
+                        {{ material.name }} - <a href="{{ material.file.url }}" target="_blank">View</a>
+                        <a href="{% url 'delete_material' material.pk %}" class="removebutton">Remove</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- index.html -->
+<script type="text/javascript">
+    function redirectToStartStudy() {
+        window.location.href = "{% url 'start_study' %}";
+    }
+</script>
+
+</body>
+</html>

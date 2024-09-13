@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Buddy - Start Study</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f3f8;
+            color: #333;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 8px;
+        }
+
+        .top {
+            height: 25%;
+            background-image: url('https://img.freepik.com/premium-vector/back-school-abstract-blackboard-green-board-with-hand-drawn-chalk-school-supplies_697711-357.jpg?w=1060');
+            background-size: 100% 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            color: #fff;
+        }
+
+        .middle {
+            flex: 1;
+            display: flex;
+        }
+
+        .left, .right {
+            background-color: #f8f9fa;
+            padding: 20px;
+            color: #555;
+        }
+
+        .left {
+            width: 70%;
+            border-bottom-left-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .left-top {
+            height: 20%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .left-middle {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 30px;
+        }
+
+        .left-bottom {
+            height: 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .right {
+            width: 30%;
+            border-bottom-right-radius: 8px;
+            border-left: 2px solid #007bff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .button {
+            margin-bottom: 10px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #386f45;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            transition-duration: 0.4s;
+        }
+
+        .removebutton {
+            background-color: #f2f3f8;
+            padding-left: 10px;
+            padding-right: 10px;
+            color : red
+        }
+
+        .viewbutton{
+            color: blue ;
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
+
+        h1, h2 {
+            margin: 0 0 10px;
+        }
+
+        p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .welcome {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subheader {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search-bar {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .timer-section {
+            width: 80%;
+            text-align: center;
+            border-top: 2px solid #007bff;
+            padding-top: 10px;
+            margin-top: 20px;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        li{
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top">
+            <div class="welcome">Welcome to Study Buddy!</div>
+            <div class="subheader">An app for students</div>
+        </div>
+        <div class="middle">
+            <div class="left">
+                <div class="left-top">
+                    <h2>Start Study</h2>
+                    <button id="setTimerBtn" class="button">Set Timer</button>
+                    <button id="endTimerBtn" class="button">End Timer</button>
+                </div>
+                <div class="left-middle">
+                    <script async src="https://cse.google.com/cse.js?cx=45e7de80f8d424acc">
+                    </script>
+                    <div class="gcse-search"></div>
+                </div>
+                <div class="left-bottom">
+                    <div class="timer-section">
+                        <div class="timer" id="studyTimer">Time Studied: 00:00:00</div>
+                        <button id="resetTimerBtn" class="button" style="display: none;">Reset Timer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <h2>Study Materials</h2>
+                <form method="post" action="{% url 'add_material' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Material Name" required>
+                    <input type="file" name="file" required>
+                    <button type="submit" class="button">Add Material</button>
+                </form>
+                <h2>Current Materials</h2>
+                <ul>
+                    {% for material in study_materials %}
+                    <li>
+                        {{ material.name }} - <a href="{{ material.file.url }}" target="_blank" class="viewbutton">View</a>
+                        <a href="{% url 'delete_material' material.pk %}" class="removebutton">Remove</a>
+                        <br/>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let studyTime = 0;
+        let timerInterval;
+
+        document.getElementById('setTimerBtn').addEventListener('click', function() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            studyTime = 0;
+            timerInterval = setInterval(function() {
+                studyTime++;
+                let hours = Math.floor(studyTime / 3600);
+                let minutes = Math.floor((studyTime % 3600) / 60);
+                let seconds = studyTime % 60;
+                document.getElementById('studyTimer').textContent = 
+                    `Time Studied: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        });
+
+        document.getElementById('endTimerBtn').addEventListener('click', function() {
+            clearInterval(timerInterval);
+            document.getElementById('resetTimerBtn').style.display = 'inline-block';
+        });
+
+        document.getElementById('resetTimerBtn').addEventListener('click', function() {
+            studyTime = 0;
+            document.getElementById('studyTimer').textContent = 'Time Studied: 00:00:00';
+            document.getElementById('resetTimerBtn').style.display = 'none';
+        });
+
+        document.getElementById('addMaterialsBtn').addEventListener('click', function() {
+            document.getElementById('materialsForm').style.display = 'block';
+        });
+
+        document.getElementById('saveMaterialsBtn').addEventListener('click', function() {
+            let material = document.getElementById('materialsInput').value;
+            if (material) {
+                document.getElementById('materialsStatus').textContent = 'Material saved: ' + material;
+                document.getElementById('materialsForm').style.display = 'none';
+            }
+        });
+
+        document.getElementById('searchBar').addEventListener('input', function() {
+        const query = this.value;
+        fetch(`/search/?q=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                // Display search results
+                console.log(data.results);
+                // You can add code here to display the search results in the UI
+            });
+    });
+    </script>
+    <!-- studytime.html -->
+
+</body>
+</html>
